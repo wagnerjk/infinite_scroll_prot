@@ -24,7 +24,7 @@ class PostRepository implements IPostRepository {
     }
   }
 
-  List<PostEntity> _convert(List<Map<String, dynamic>> postsJson) {
+  List<PostEntity> _convert(List postsJson) {
     return postsJson.map((PostAdapter.fromJson)).toList();
   }
 }
