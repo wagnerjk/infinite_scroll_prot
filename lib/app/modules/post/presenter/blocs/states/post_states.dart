@@ -1,6 +1,5 @@
 import 'package:infinite_scroll_prot/app/core/error/error.dart';
 import 'package:infinite_scroll_prot/app/modules/post/domain/entities/post_entity.dart';
-import 'package:infinite_scroll_prot/app/modules/post/domain/errors/post_errors.dart';
 
 abstract class PostState {}
 

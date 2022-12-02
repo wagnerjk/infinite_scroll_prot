@@ -5,6 +5,7 @@ import 'package:infinite_scroll_prot/app/modules/post/domain/usecases/get_all_po
 import 'package:infinite_scroll_prot/app/modules/post/external/post_datasource.dart';
 import 'package:infinite_scroll_prot/app/modules/post/infra/datasource/i_post_datasource.dart';
 import 'package:infinite_scroll_prot/app/modules/post/infra/repositories/post_repository.dart';
+import 'package:infinite_scroll_prot/app/modules/post/presenter/blocs/post_bloc.dart';
 
 List<Bind> get postBinds => [
       // Dio
@@ -17,5 +18,8 @@ List<Bind> get postBinds => [
       Bind.lazySingleton<IPostRepository>((i) => PostRepository(i())),
 
       // Usecases
-      Bind.lazySingleton<IGetAllPostsUsecase>((i) => GetAllPostsUsecase(i()))
+      Bind.lazySingleton<IGetAllPostsUsecase>((i) => GetAllPostsUsecase(i())),
+
+      // Bloc
+      Bind.lazySingleton<PostBloc>((i) => PostBloc(i())),
     ];
