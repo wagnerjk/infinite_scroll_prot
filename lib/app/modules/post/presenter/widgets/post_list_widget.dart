@@ -5,7 +5,7 @@ import 'package:infinite_scroll_prot/app/modules/post/presenter/blocs/events/pos
 import 'package:infinite_scroll_prot/app/modules/post/presenter/blocs/post_bloc.dart';
 import 'package:infinite_scroll_prot/app/modules/post/presenter/blocs/states/post_states.dart';
 
-const int numberOfPostsPerRequest = 10;
+const int numberOfPostsPerRequest = 5;
 
 class PostListWidget extends StatefulWidget {
   const PostListWidget({super.key});
@@ -19,6 +19,7 @@ class _PostListWidgetState extends State<PostListWidget> {
   late int _pageNumber = 1;
   var _isLastPage = false;
   final int _nextPageTrigger = 3;
+  final list = [];
 
   PostParametersRequest get parametersRequest => PostParametersRequest(_pageNumber, numberOfPostsPerRequest);
 
@@ -52,7 +53,7 @@ class _PostListWidgetState extends State<PostListWidget> {
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: postBloc.stream,
-      builder: (context, snapshot) {
+      builder: (context, _) {
         final state = postBloc.state;
 
         if (state is PostInitial) {
@@ -61,7 +62,7 @@ class _PostListWidgetState extends State<PostListWidget> {
           );
         }
 
-        if (state is PostLoading) {
+        if (state is PostLoading && list.isEmpty) {
           return const Center(
             child: CircularProgressIndicator(),
           );
@@ -72,17 +73,27 @@ class _PostListWidgetState extends State<PostListWidget> {
             child: Text('houve um erro'),
           );
         }
-        final list = (state as PostSucess).posts;
+        if (state is PostSucess) {
+          list.addAll(state.posts);
+        }
         return ListView.builder(
           itemCount: list.length + (_isLastPage ? 0 : 1),
           itemBuilder: (context, index) {
-            if (index == list.length - _nextPageTrigger) {
+            if (state is! PostLoading && (index == list.length - _nextPageTrigger)) {
               _fetchPosts();
+            }
+
+            if (index == list.length) {
+              if (state is PostLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
             }
 
             final item = list[index];
             return ListTile(
-              title: Text(item.title),
+              title: Text('${item.id} - ${item.title}'),
               subtitle: Text(item.body),
             );
           },

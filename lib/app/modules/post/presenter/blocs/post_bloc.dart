@@ -15,6 +15,7 @@ class PostBloc extends Bloc<PostEvents, PostState> {
           list.addAll(state.posts);
         }
         emit(PostLoading());
+        await Future.delayed(const Duration(seconds: 2));
         final result = await getAllPostsUsecase(postParametersRequest: event.parametersRequest);
         emit(result.fold((l) => PostError(l), (r) {
           list.addAll(r);
