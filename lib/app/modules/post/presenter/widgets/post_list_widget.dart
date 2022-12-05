@@ -19,17 +19,13 @@ class _PostListWidgetState extends State<PostListWidget> {
   late int _pageNumber = 1;
   var _isLastPage = false;
   final int _nextPageTrigger = 3;
-  final list = [];
+  var list = [];
 
   PostParametersRequest get parametersRequest => PostParametersRequest(_pageNumber, numberOfPostsPerRequest);
 
   void _atualiza() {
-    if (postBloc.state is PostSucess) {
-      //   setState(() {
-      _isLastPage = (postBloc.state as PostSucess).posts.length < numberOfPostsPerRequest;
-      _pageNumber++;
-      //   });
-    }
+    _isLastPage = postBloc.state is PostSucess ? (postBloc.state as PostSucess).isLastPage : false;
+    _pageNumber++;
   }
 
   void _fetchPosts() {
@@ -58,7 +54,7 @@ class _PostListWidgetState extends State<PostListWidget> {
 
         if (state is PostInitial) {
           return const Center(
-            child: Text('nada ainda'),
+            child: Text('Nada ainda'),
           );
         }
 
@@ -70,11 +66,11 @@ class _PostListWidgetState extends State<PostListWidget> {
 
         if (state is PostError) {
           return const Center(
-            child: Text('houve um erro'),
+            child: Text('Houve um erro'),
           );
         }
         if (state is PostSucess) {
-          list.addAll(state.posts);
+          list = state.posts;
         }
         return ListView.builder(
           itemCount: list.length + (_isLastPage ? 0 : 1),
@@ -84,11 +80,9 @@ class _PostListWidgetState extends State<PostListWidget> {
             }
 
             if (index == list.length) {
-              if (state is PostLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
             }
 
             final item = list[index];
